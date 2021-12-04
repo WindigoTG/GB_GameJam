@@ -9,7 +9,7 @@ namespace GameJamTeamOne
         {
             base.OnSLStateNoTransitionUpdate(animator, stateInfo, layerIndex);
 
-            (m_MonoBehaviour as ModifiedPlayerCharacter).SetJetpacking(m_MonoBehaviour.CheckForJumpInput());
+            (m_MonoBehaviour as ModifiedPlayerCharacter).CheckForJetpack();
         }
     }
 }

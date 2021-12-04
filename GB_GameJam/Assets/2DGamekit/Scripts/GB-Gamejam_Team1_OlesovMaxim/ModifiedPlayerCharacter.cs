@@ -20,6 +20,12 @@ namespace GameJamTeamOne
         [SerializeField] private float _freeflightJetpackSpeed = 10f;
         [SerializeField] private float _freeflightJetpackAcceleration = 100f;
         [SerializeField] private float _freeflightJetpackDeceleration = 100f;
+        [Space]
+        [SerializeField] private string _jetpackItemName = "Jetpack";
+        [Space]
+        [SerializeField] private ParticleSystem _jetStreamFX;
+        [SerializeField] private Transform _facingLeftJetStreamPoint;
+        [SerializeField] private Transform _facingRightJetStreamnPoint;
 
         private float _remainingFlightTime;
         private readonly int _hashJetpacking = Animator.StringToHash("IsJetpacking");
@@ -37,6 +43,12 @@ namespace GameJamTeamOne
 
         #region Methods
 
+        public void CheckForJetpack()
+        {
+            if (inventoryController.HasItem(_jetpackItemName))
+                SetJetpacking(CheckForJumpInput());
+        }
+
         public void SetJetpacking(bool isJetpacking)
         {
             m_Animator.SetBool(_hashJetpacking, isJetpacking);
@@ -48,6 +60,7 @@ namespace GameJamTeamOne
             {
                 _remainingFlightTime = _jetpackMaxFlightTime;
                 _isJetpacking = true;
+                _jetStreamFX.gameObject.SetActive(true);
             }
         }
 
@@ -55,6 +68,7 @@ namespace GameJamTeamOne
         {
             SetJetpacking(false);
             _isJetpacking = false;
+            _jetStreamFX.gameObject.SetActive(false);
         }
 
         public bool CheckForGroundedWithJetpack()
@@ -62,10 +76,7 @@ namespace GameJamTeamOne
             var isGrounded = CheckForGrounded();
 
             if (isGrounded)
-            {
-                SetJetpacking(false);
-                _isJetpacking = false;
-            }
+                StopJetpacking();
 
             return isGrounded;
         }
@@ -87,15 +98,18 @@ namespace GameJamTeamOne
                 m_MoveVector.y = Mathf.Min(m_MoveVector.y + _jetpackVerticalAcceleration * Time.deltaTime, _jetpackMaxVerticalSpeed);
         }
 
-        private void FloatDownWithJetpack()
-        {
-            m_MoveVector.y -= _jetpaHoverDownSpeed * Time.deltaTime;
-        }
+        private void FloatDownWithJetpack() => m_MoveVector.y -= _jetpaHoverDownSpeed * Time.deltaTime;
+        
 
         private void UpdateFlightTime()
         {
             if (_remainingFlightTime > 0)
                 _remainingFlightTime -= Time.deltaTime;
+        }
+
+        public void UpdateJetstreamPosition()
+        {
+            _jetStreamFX.transform.position = spriteRenderer.flipX ? _facingRightJetStreamnPoint.position : _facingLeftJetStreamPoint.position;
         }
 
         public void JetpackHorizontalMovement()

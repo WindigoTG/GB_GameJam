@@ -19,6 +19,7 @@ namespace GameJamTeamOne
             var playerCharacter = m_MonoBehaviour as ModifiedPlayerCharacter;
 
             playerCharacter.UpdateFacing();
+            playerCharacter.UpdateJetstreamPosition();
 
             if (playerCharacter.CheckIfJetpackIsInUse())
             {
