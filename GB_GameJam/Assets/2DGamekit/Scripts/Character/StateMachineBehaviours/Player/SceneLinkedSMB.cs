@@ -14,7 +14,7 @@ namespace Gamekit2D
         public static void Initialise (Animator animator, TMonoBehaviour monoBehaviour)
         {
             SceneLinkedSMB<TMonoBehaviour>[] sceneLinkedSMBs = animator.GetBehaviours<SceneLinkedSMB<TMonoBehaviour>>();
-
+            
             for (int i = 0; i < sceneLinkedSMBs.Length; i++)
             {
                 sceneLinkedSMBs[i].InternalInitialise(animator, monoBehaviour);
