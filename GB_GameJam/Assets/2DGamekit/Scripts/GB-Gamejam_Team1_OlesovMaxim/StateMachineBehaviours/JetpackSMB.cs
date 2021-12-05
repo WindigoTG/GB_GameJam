@@ -23,7 +23,7 @@ namespace GameJamTeamOne
 
             if (playerCharacter.CheckIfJetpackIsInUse())
             {
-                if (playerCharacter.JetpackType == JetpackType.UpwardThrust)
+                if (playerCharacter.CurrentJetpackType == JetpackType.UpwardThrust)
                     ExecuteThrustBehaviour(playerCharacter);
                 else
                     ExecuteFreeflightBehaviour(playerCharacter);
