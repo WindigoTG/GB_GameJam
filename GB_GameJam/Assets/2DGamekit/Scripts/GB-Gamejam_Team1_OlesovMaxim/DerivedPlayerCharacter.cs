@@ -1,30 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Gamekit2D;
 
 namespace GameJamTeamOne
 {
-    public sealed class DerivedPlayerCharacter : PlayerCharacter
+    public sealed class DerivedPlayerCharacter : PlayerCharacter, IDataPersister
     {
         #region Fields
 
         [Header("Jetpack")]
-        [SerializeField] private JetpackType _jetpackType;
-        [SerializeField] private float _jetpackMaxFlightTime = 5f;
-        [SerializeField] private float _jetpaHoverDownSpeed = 10f;
-        [SerializeField] private bool _hasFlightCeiling = false;
-        [SerializeField, Min(0)] private float _flightCeilingHeight;
-        [Header("Upward thrust settings")]
-        [SerializeField] private float _jetpackVerticalAcceleration = 5f;
-        [SerializeField] private float _jetpackMaxVerticalSpeed = 10f;
-        [SerializeField, Range(0f, 2f)] public float _jetpackHorizAccelProportion;
-        [SerializeField, Range(0f, 1f)] public float _jetpackHorizDecelProportion;
-        [Header("Freeflight settings")]
-        [SerializeField] private float _freeflightJetpackSpeed = 10f;
-        [SerializeField] private float _freeflightJetpackAcceleration = 100f;
-        [SerializeField] private float _freeflightJetpackDeceleration = 100f;
-        [SerializeField] private bool _canAscend = true;
+        [SerializeField] private JetpackSettings _jetpackSettings;
         [Space]
         [SerializeField] private string _jetpackItemName = "Jetpack";
         [Space]
@@ -34,6 +19,8 @@ namespace GameJamTeamOne
         [Header("Jetstream damager")]
         [SerializeField] private Damager _jetstreamDamager;
         [SerializeField, Min(0.1f)] private float _damageTicksPerSecond = 0.1f;
+        [Space]
+        [SerializeField] private DataSettings _dataSettings;
 
         private float _remainingFlightTime;
         private readonly int _hashJetpacking = Animator.StringToHash("IsJetpacking");
@@ -47,7 +34,7 @@ namespace GameJamTeamOne
 
         #region Fields
 
-        public JetpackType JetpackType => _jetpackType;
+        public JetpackType CurrentJetpackType => _jetpackSettings.JetpackType;
 
         #endregion
 
@@ -68,10 +55,10 @@ namespace GameJamTeamOne
         {
             if (!_isJetpacking)
             {
-                _remainingFlightTime = _jetpackMaxFlightTime;
+                _remainingFlightTime = _jetpackSettings.JetpackMaxFlightTime;
                 _isJetpacking = true;
                 _jetStreamFX.gameObject.SetActive(true);
-                _currentFlightCeiling = transform.position.y + _flightCeilingHeight;
+                _currentFlightCeiling = transform.position.y + _jetpackSettings.FlightCeilingHeight;
 
                 if(_jetstreamDamager)
                 {
@@ -105,12 +92,12 @@ namespace GameJamTeamOne
 
             if (_remainingFlightTime <= 0)
                 FloatDownWithJetpack();
-            else if (PlayerInput.Instance.Vertical.Value < 0f || m_CharacterController2D.IsCeilinged && m_MoveVector.y > 0f || 
-                _hasFlightCeiling && transform.position.y >= _currentFlightCeiling)
+            else if (PlayerInput.Instance.Vertical.Value < 0f || m_CharacterController2D.IsCeilinged && m_MoveVector.y > 0f ||
+                _jetpackSettings.HasFlightCeiling && transform.position.y >= _currentFlightCeiling)
                 SetVerticalMovement(0f);
             else
             {
-                m_MoveVector.y = Mathf.Min(m_MoveVector.y + _jetpackVerticalAcceleration * Time.deltaTime, _jetpackMaxVerticalSpeed);
+                m_MoveVector.y = Mathf.Min(m_MoveVector.y + _jetpackSettings.JetpackVerticalAcceleration * Time.deltaTime, _jetpackSettings.JetpackMaxVerticalSpeed);
             }
         }
 
@@ -121,9 +108,9 @@ namespace GameJamTeamOne
             float acceleration;
 
             if (PlayerInput.Instance.Horizontal.ReceivingInput)
-                acceleration = groundAcceleration * _jetpackHorizAccelProportion;
+                acceleration = groundAcceleration * _jetpackSettings.JetpackHorizAccelProportion;
             else
-                acceleration = groundDeceleration * _jetpackHorizDecelProportion;
+                acceleration = groundDeceleration * _jetpackSettings.JetpackHorizDecelProportion;
 
             m_MoveVector.x = Mathf.MoveTowards(m_MoveVector.x, desiredSpeed, acceleration * Time.deltaTime);
         }
@@ -136,28 +123,28 @@ namespace GameJamTeamOne
             desiredMovementVector.x = PlayerInput.Instance.Horizontal.Value;
             desiredMovementVector.y = PlayerInput.Instance.Vertical.Value;
 
-            var desiredHorizontalSpeed = desiredMovementVector.normalized.x * _freeflightJetpackSpeed;
-            var desiredVerticakSpeed = desiredMovementVector.normalized.y * _freeflightJetpackSpeed;
+            var desiredHorizontalSpeed = desiredMovementVector.normalized.x * _jetpackSettings.FreeflightJetpackSpeed;
+            var desiredVerticakSpeed = desiredMovementVector.normalized.y * _jetpackSettings.FreeflightJetpackSpeed;
 
-            if ((!_canAscend || _hasFlightCeiling && transform.position.y >= _currentFlightCeiling)
+            if ((!_jetpackSettings.CanAscend || _jetpackSettings.HasFlightCeiling && transform.position.y >= _currentFlightCeiling)
                 && desiredVerticakSpeed > 0f)
                 desiredVerticakSpeed = 0f;
 
             float acceleration;
 
             if (PlayerInput.Instance.Horizontal.ReceivingInput)
-                acceleration = _freeflightJetpackAcceleration;
+                acceleration = _jetpackSettings.FreeflightJetpackAcceleration;
             else
-                acceleration = _freeflightJetpackDeceleration;
+                acceleration = _jetpackSettings.FreeflightJetpackDeceleration;
 
             m_MoveVector.x = Mathf.MoveTowards(m_MoveVector.x, desiredHorizontalSpeed, acceleration * Time.deltaTime);
 
             if (_remainingFlightTime > 0)
             {
                 if (PlayerInput.Instance.Vertical.ReceivingInput)
-                    acceleration = _freeflightJetpackAcceleration;
+                    acceleration = _jetpackSettings.FreeflightJetpackAcceleration;
                 else
-                    acceleration = _freeflightJetpackDeceleration;
+                    acceleration = _jetpackSettings.FreeflightJetpackDeceleration;
 
                 m_MoveVector.y = Mathf.MoveTowards(m_MoveVector.y, desiredVerticakSpeed, acceleration * Time.deltaTime);
             }
@@ -171,20 +158,28 @@ namespace GameJamTeamOne
                 _remainingFlightTime -= Time.deltaTime;
         }
 
-        private void FloatDownWithJetpack() => m_MoveVector.y -= _jetpaHoverDownSpeed * Time.deltaTime;
+        private void FloatDownWithJetpack() => m_MoveVector.y -= _jetpackSettings.JetpackHoverDownSpeed * Time.deltaTime;
 
         public void UpdateJetstreamPosition() => 
             _jetStreamFX.transform.position = spriteRenderer.flipX ? _facingRightJetStreamnPoint.position : _facingLeftJetStreamPoint.position;
 
-        public void SetFreeflightAscend(bool canAscend) => _canAscend = canAscend;
+        public void SetFreeflightAscend(bool canAscend) => _jetpackSettings.CanAscend = canAscend;
 
-        public void SetJetpackType(JetpackType type) => _jetpackType = type;
+        public void SetJetpackType(JetpackType type) => _jetpackSettings.JetpackType = type;
 
-        public void SetFlightCeilingEnabled(bool isEnabled) => _hasFlightCeiling = isEnabled;
+        public void SetFlightCeilingEnabled(bool isEnabled) => _jetpackSettings.HasFlightCeiling = isEnabled;
 
-        public void SetFlightCeilingHeight(float height) => _flightCeilingHeight = height;
+        public void SetFlightCeilingHeight(float height) => _jetpackSettings.FlightCeilingHeight = height;
 
-        public void ChangeFlightCeilingHeightByValue(float value) => _flightCeilingHeight += value;
+        public void ChangeFlightCeilingHeightByValue(float value) => _jetpackSettings.FlightCeilingHeight += value;
+
+        public void ChangeJetpackType()
+        {
+            if (_jetpackSettings.JetpackType == JetpackType.Freeflight)
+                SetJetpackType(JetpackType.UpwardThrust);
+            else
+                SetJetpackType(JetpackType.Freeflight);
+        }
 
         public void BeginDamageCooldown()
         {
@@ -207,6 +202,43 @@ namespace GameJamTeamOne
             yield return new WaitForSeconds(1f / _damageTicksPerSecond);
             _jetstreamDamager.EnableDamage();
             _nextJetstreamDamageTickEnabler = null;
+        }
+
+        #endregion
+
+
+        #region UnityMethods
+
+        void OnEnable()
+        {
+            PersistentDataManager.RegisterPersister(this);
+        }
+
+        void OnDisable()
+        {
+            PersistentDataManager.UnregisterPersister(this);
+        }
+
+        #endregion
+
+
+        #region IDataPersister
+
+        public DataSettings GetDataSettings() => _dataSettings;
+
+        public Data SaveData() { Debug.Log("KBA " + name); return new Data<JetpackSettings>(_jetpackSettings); }
+
+        public void LoadData(Data data)
+        {
+            Debug.Log("KPR " + name);
+            var newData = data as Data<JetpackSettings>;
+            _jetpackSettings = newData.value;
+        }
+
+        public void SetDataSettings(string dataTag, DataSettings.PersistenceType persistenceType)
+        {
+            _dataSettings.dataTag = dataTag;
+            _dataSettings.persistenceType = persistenceType;
         }
 
         #endregion

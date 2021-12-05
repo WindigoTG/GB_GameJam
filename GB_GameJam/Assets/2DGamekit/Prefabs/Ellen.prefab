@@ -418,25 +418,29 @@ MonoBehaviour:
   maxVerticalDeltaDampTime: 0.6
   verticalCameraOffsetDelay: 1
   spriteOriginallyFacesLeft: 0
-  _jetpackType: 1
-  _jetpackMaxFlightTime: 5
-  _jetpaHoverDownSpeed: 5
-  _hasFlightCeiling: 0
-  _flightCeilingHeight: 0
-  _jetpackVerticalAcceleration: 20
-  _jetpackMaxVerticalSpeed: 5
-  _jetpackHorizAccelProportion: 1
-  _jetpackHorizDecelProportion: 0.25
-  _freeflightJetpackSpeed: 7
-  _freeflightJetpackAcceleration: 100
-  _freeflightJetpackDeceleration: 100
-  _canAscend: 1
+  _jetpackSettings:
+    JetpackType: 1
+    JetpackMaxFlightTime: 5
+    JetpackHoverDownSpeed: 5
+    HasFlightCeiling: 0
+    _flightCeilingHeight: 0
+    JetpackVerticalAcceleration: 20
+    JetpackMaxVerticalSpeed: 7
+    _jetpackHorizAccelProportion: 1
+    _jetpackHorizDecelProportion: 0.25
+    FreeflightJetpackSpeed: 7
+    FreeflightJetpackAcceleration: 100
+    FreeflightJetpackDeceleration: 100
+    CanAscend: 1
   _jetpackItemName: Jetpack
   _jetStreamFX: {fileID: 4952669422104297538}
   _facingLeftJetStreamPoint: {fileID: 5681778783733752045}
   _facingRightJetStreamnPoint: {fileID: 3478451339536265245}
   _jetstreamDamager: {fileID: 2210711333995443891}
   _damageTicksPerSecond: 2
+  _dataSettings:
+    dataTag: Ellen
+    persistenceType: 3
 --- !u!114 &114774311958850474
 MonoBehaviour:
   m_ObjectHideFlags: 0
