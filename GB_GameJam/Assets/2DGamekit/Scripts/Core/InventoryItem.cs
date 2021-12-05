@@ -77,13 +77,11 @@ namespace Gamekit2D
 
         public Data SaveData()
         {
-            Debug.Log("KBA " + name);
             return new Data<bool>(gameObject.activeSelf);
         }
 
         public void LoadData(Data data)
         {
-            Debug.Log("KPR" + name);
             Data<bool> inventoryItemData = (Data<bool>)data;
             gameObject.SetActive(inventoryItemData.value);
         }

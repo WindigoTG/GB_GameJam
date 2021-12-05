@@ -226,11 +226,10 @@ namespace GameJamTeamOne
 
         public DataSettings GetDataSettings() => _dataSettings;
 
-        public Data SaveData() { Debug.Log("KBA " + name); return new Data<JetpackSettings>(_jetpackSettings); }
+        public Data SaveData() => new Data<JetpackSettings>(_jetpackSettings);
 
         public void LoadData(Data data)
         {
-            Debug.Log("KPR " + name);
             var newData = data as Data<JetpackSettings>;
             _jetpackSettings = newData.value;
         }

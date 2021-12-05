@@ -420,8 +420,8 @@ MonoBehaviour:
   spriteOriginallyFacesLeft: 0
   _jetpackSettings:
     JetpackType: 1
-    JetpackMaxFlightTime: 5
-    JetpackHoverDownSpeed: 5
+    JetpackMaxFlightTime: 0.7
+    JetpackHoverDownSpeed: 10
     HasFlightCeiling: 0
     _flightCeilingHeight: 0
     JetpackVerticalAcceleration: 20
@@ -431,13 +431,13 @@ MonoBehaviour:
     FreeflightJetpackSpeed: 7
     FreeflightJetpackAcceleration: 100
     FreeflightJetpackDeceleration: 100
-    CanAscend: 1
+    CanAscend: 0
   _jetpackItemName: Jetpack
   _jetStreamFX: {fileID: 4952669422104297538}
   _facingLeftJetStreamPoint: {fileID: 5681778783733752045}
   _facingRightJetStreamnPoint: {fileID: 3478451339536265245}
   _jetstreamDamager: {fileID: 2210711333995443891}
-  _damageTicksPerSecond: 2
+  _damageTicksPerSecond: 4
   _dataSettings:
     dataTag: Ellen
     persistenceType: 3
