@@ -163,7 +163,6 @@ GameObject:
   - component: {fileID: 50735333045448606}
   - component: {fileID: 114591936569520678}
   - component: {fileID: 114734347468151670}
-  - component: {fileID: 114854669915511232}
   - component: {fileID: 5980523419520775187}
   - component: {fileID: 114774311958850474}
   - component: {fileID: 114460243114916098}
@@ -242,7 +241,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: c4d7d6470acd7bf45971042161c6e018, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -370,55 +369,6 @@ MonoBehaviour:
   dataSettings:
     dataTag: PlayerInput
     persistenceType: 3
---- !u!114 &114854669915511232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1125256590603436}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49de84fa3d321d245bc900e599de015f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 212611162554739646}
-  damageable: {fileID: 114774311958850474}
-  meleeDamager: {fileID: 114460243114916098}
-  facingLeftBulletSpawnPoint: {fileID: 4456631231676054}
-  facingRightBulletSpawnPoint: {fileID: 4929711121330312}
-  bulletPool: {fileID: 114680495344679792}
-  cameraFollowTarget: {fileID: 4530920980854552}
-  maxSpeed: 7
-  groundAcceleration: 100
-  groundDeceleration: 100
-  pushingSpeedProportion: 0.5
-  airborneAccelProportion: 1
-  airborneDecelProportion: 0.5
-  gravity: 38
-  jumpSpeed: 16.5
-  jumpAbortSpeedReduction: 100
-  hurtJumpAngle: 45
-  hurtJumpSpeed: 8
-  flickeringDuration: 0.05
-  meleeAttackDashSpeed: 15
-  dashWhileAirborne: 1
-  footstepAudioPlayer: {fileID: 114293955134965878}
-  landingAudioPlayer: {fileID: 114437884384235768}
-  hurtAudioPlayer: {fileID: 114513338842717954}
-  meleeAttackAudioPlayer: {fileID: 114450141185934166}
-  rangedAttackAudioPlayer: {fileID: 114803637809275856}
-  shotsPerSecond: 2
-  bulletSpeed: 30
-  holdingGunTimeoutDuration: 1.5
-  rightBulletSpawnPointAnimated: 1
-  cameraHorizontalFacingOffset: 2
-  cameraHorizontalSpeedOffset: 0.2
-  cameraVerticalInputOffset: 2
-  maxHorizontalDeltaDampTime: 0.4
-  maxVerticalDeltaDampTime: 0.6
-  verticalCameraOffsetDelay: 1
-  spriteOriginallyFacesLeft: 0
 --- !u!114 &5980523419520775187
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,6 +421,8 @@ MonoBehaviour:
   _jetpackType: 1
   _jetpackMaxFlightTime: 5
   _jetpaHoverDownSpeed: 5
+  _hasFlightCeiling: 0
+  _flightCeilingHeight: 0
   _jetpackVerticalAcceleration: 20
   _jetpackMaxVerticalSpeed: 5
   _jetpackHorizAccelProportion: 1
@@ -478,10 +430,13 @@ MonoBehaviour:
   _freeflightJetpackSpeed: 7
   _freeflightJetpackAcceleration: 100
   _freeflightJetpackDeceleration: 100
+  _canAscend: 1
   _jetpackItemName: Jetpack
   _jetStreamFX: {fileID: 4952669422104297538}
   _facingLeftJetStreamPoint: {fileID: 5681778783733752045}
   _facingRightJetStreamnPoint: {fileID: 3478451339536265245}
+  _jetstreamDamager: {fileID: 2210711333995443891}
+  _damageTicksPerSecond: 2
 --- !u!114 &114774311958850474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -529,8 +484,8 @@ MonoBehaviour:
   OnTakeDamage:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114854669915511232}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 5980523419520775187}
+        m_TargetAssemblyTypeName: Gamekit2D.PlayerCharacter, Assembly-CSharp
         m_MethodName: OnHurt
         m_Mode: 0
         m_Arguments:
@@ -544,8 +499,8 @@ MonoBehaviour:
   OnDie:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114854669915511232}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 5980523419520775187}
+        m_TargetAssemblyTypeName: Gamekit2D.PlayerCharacter, Assembly-CSharp
         m_MethodName: OnDie
         m_Mode: 1
         m_Arguments:
@@ -623,8 +578,8 @@ MonoBehaviour:
     OnAdd:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 114854669915511232}
-          m_TargetAssemblyTypeName: 
+        - m_Target: {fileID: 5980523419520775187}
+          m_TargetAssemblyTypeName: Gamekit2D.PlayerCharacter, Assembly-CSharp
           m_MethodName: KeyInventoryEvent
           m_Mode: 1
           m_Arguments:
@@ -642,8 +597,8 @@ MonoBehaviour:
     OnAdd:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 114854669915511232}
-          m_TargetAssemblyTypeName: 
+        - m_Target: {fileID: 5980523419520775187}
+          m_TargetAssemblyTypeName: Gamekit2D.PlayerCharacter, Assembly-CSharp
           m_MethodName: KeyInventoryEvent
           m_Mode: 1
           m_Arguments:
@@ -661,8 +616,8 @@ MonoBehaviour:
     OnAdd:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 114854669915511232}
-          m_TargetAssemblyTypeName: 
+        - m_Target: {fileID: 5980523419520775187}
+          m_TargetAssemblyTypeName: Gamekit2D.PlayerCharacter, Assembly-CSharp
           m_MethodName: KeyInventoryEvent
           m_Mode: 1
           m_Arguments:
@@ -1926,6 +1881,61 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2742855005000452793, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnNonDamageableHit.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5980523419520775187}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnNonDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BeginDamageCooldown
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnNonDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameJamTeamOne.DerivedPlayerCharacter, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+        type: 3}
+      propertyPath: OnDamageableHit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6207378620929636175, guid: 16fb9e57f06cc4a43a2172b3500831ee,
         type: 3}
       propertyPath: m_RootOrder
@@ -1995,3 +2005,15 @@ ParticleSystem:
     type: 3}
   m_PrefabInstance: {fileID: 2586517416840568681}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2210711333995443891 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4416661089142368730, guid: 16fb9e57f06cc4a43a2172b3500831ee,
+    type: 3}
+  m_PrefabInstance: {fileID: 2586517416840568681}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1506f7b67235554cb42519c257da979, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

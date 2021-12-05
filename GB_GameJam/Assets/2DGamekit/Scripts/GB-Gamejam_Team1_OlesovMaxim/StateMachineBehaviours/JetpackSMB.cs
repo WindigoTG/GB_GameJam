@@ -9,14 +9,14 @@ namespace GameJamTeamOne
 
         public override void OnSLStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            var mb = m_MonoBehaviour as ModifiedPlayerCharacter;
+            var mb = m_MonoBehaviour as DerivedPlayerCharacter;
 
             mb.StartJetpacking();
         }
 
         public override void OnSLStateNoTransitionUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            var playerCharacter = m_MonoBehaviour as ModifiedPlayerCharacter;
+            var playerCharacter = m_MonoBehaviour as DerivedPlayerCharacter;
 
             playerCharacter.UpdateFacing();
             playerCharacter.UpdateJetstreamPosition();
@@ -39,23 +39,23 @@ namespace GameJamTeamOne
             m_MonoBehaviour.CheckAndFireGun();
         }
 
-        private void ExecuteThrustBehaviour(ModifiedPlayerCharacter playerCharacter)
+        private void ExecuteThrustBehaviour(DerivedPlayerCharacter playerCharacter)
         {
             playerCharacter.JetpackHorizontalMovement();
             playerCharacter.JetpackVerticalMovement();
         }
 
-        private void ExecuteFreeflightBehaviour(ModifiedPlayerCharacter playerCharacter)
+        private void ExecuteFreeflightBehaviour(DerivedPlayerCharacter playerCharacter)
         {
             playerCharacter.JetpackFreeflightMovement();
         }
 
-        public override void OnSLStatePreExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        public override void OnSLStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            AnimatorStateInfo nextState = animator.GetNextAnimatorStateInfo(0);
+            AnimatorStateInfo newtState = animator.GetCurrentAnimatorStateInfo(0);
 
-            if (nextState.IsTag("Damaged"))
-                (m_MonoBehaviour as ModifiedPlayerCharacter).StopJetpacking();
+            if (newtState.IsTag("Damaged"))
+                (m_MonoBehaviour as DerivedPlayerCharacter).StopJetpacking();
         }
 
         #endregion
